@@ -31,10 +31,10 @@ public class AccountService {
         Account account = accountMapper.mapFromCreateAccountRequest(createAccountRequest);
 
         if(accountRepository.existsByUsername(account.getUsername()))
-            throw new AccountAlreadyExistsException("account already exists");
+            throw new AccountAlreadyExistsException("Username is already taken");
 
         if(accountRepository.existsByEmail(account.getEmail()))
-            throw new AccountAlreadyExistsException("account already exists");
+            throw new AccountAlreadyExistsException("Email is already in use");
 
         account.setCreatedAt(LocalDateTime.now());
         account.setPassword(passwordEncoder.encode(account.getPassword()));
