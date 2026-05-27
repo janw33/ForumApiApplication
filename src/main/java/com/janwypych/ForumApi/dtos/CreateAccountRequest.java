@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 public class CreateAccountRequest {
     @NotBlank
-    @Size(min = 2, max = 50)
+    @Size(min = 2, max = 20)
     @Pattern(
             regexp = "^[a-zA-Z0-9](?:[a-zA-Z0-9_]{1,18}[a-zA-Z0-9])?$",
             message = "Username must contain only letters, numbers and underscores")
