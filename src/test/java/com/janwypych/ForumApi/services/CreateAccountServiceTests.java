@@ -1,5 +1,6 @@
 package com.janwypych.ForumApi.services;
 
+import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.AuthResponse;
 import com.janwypych.ForumApi.dtos.CreateAccountRequest;
 import com.janwypych.ForumApi.entities.Account;
@@ -98,12 +99,7 @@ public class CreateAccountServiceTests {
                 .password("password123")
                 .build();
 
-        Account savedAccount = Account.builder()
-                .id(1L)
-                .username("test")
-                .email("test@test.com")
-                .password("hashedPassword")
-                .build();
+        Account savedAccount = TestDataUtil.createAccount();
 
         when(accountMapper.mapFromCreateAccountRequest(request))
                 .thenReturn(mappedAccount);
