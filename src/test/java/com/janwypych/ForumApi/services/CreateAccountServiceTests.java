@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AccountServiceTests {
+public class CreateAccountServiceTests {
     @Mock
     private AccountRepository accountRepository;
 
@@ -36,7 +36,7 @@ public class AccountServiceTests {
     private AccountService accountService;
 
     @Test
-    void testThatRegisterThrowsAccountAlreadyExistsExceptionWhenUsernameIsUnavailable() {
+    public void testThatRegisterThrowsAccountAlreadyExistsExceptionWhenUsernameIsUnavailable() {
         CreateAccountRequest request = new CreateAccountRequest();
 
         Account mappedAccount = Account.builder()
@@ -61,7 +61,7 @@ public class AccountServiceTests {
     }
 
     @Test
-    void testThatRegisterThrowsAccountAlreadyExistsExceptionWhenEmailIsUnavailable() {
+    public void testThatRegisterThrowsAccountAlreadyExistsExceptionWhenEmailIsUnavailable() {
         CreateAccountRequest request = new CreateAccountRequest();
 
         Account mappedAccount = Account.builder()
@@ -89,7 +89,7 @@ public class AccountServiceTests {
     }
 
     @Test
-    void testThatRegisterReturnsTokenWhenEmailIsAvailable() {
+    public void testThatRegisterReturnsTokenWhenEmailIsAvailable() {
         CreateAccountRequest request = new CreateAccountRequest();
 
         Account mappedAccount = Account.builder()
