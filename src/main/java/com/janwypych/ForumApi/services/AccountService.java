@@ -2,10 +2,13 @@ package com.janwypych.ForumApi.services;
 
 import com.janwypych.ForumApi.dtos.AuthResponse;
 import com.janwypych.ForumApi.dtos.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.exceptions.AccountAlreadyExistsException;
+import com.janwypych.ForumApi.exceptions.InvalidCredentialsException;
 import com.janwypych.ForumApi.mappers.AccountMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,19 @@ public class AccountService {
 
         Account savedAccount = accountRepository.save(account);
         String token = jwtService.generateToken(savedAccount);
+
+        return new AuthResponse(token);
+    }
+
+    public AuthResponse login(LoginRequest loginRequest) {
+        Account account = accountRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() ->
+                        new InvalidCredentialsException("Invalid credentials"));
+
+        if(!passwordEncoder.matches(loginRequest.getPassword(), account.getPassword()))
+            throw new InvalidCredentialsException("Invalid credentials");
+
+        String token = jwtService.generateToken(account);
 
         return new AuthResponse(token);
     }

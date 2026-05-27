@@ -2,6 +2,7 @@ package com.janwypych.ForumApi.controllers;
 
 import com.janwypych.ForumApi.dtos.AuthResponse;
 import com.janwypych.ForumApi.dtos.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.LoginRequest;
 import com.janwypych.ForumApi.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -23,5 +24,12 @@ public class AccountController {
             @Valid @RequestBody CreateAccountRequest createAccountRequest
             ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.register(createAccountRequest));
+    }
+
+    @PostMapping(path = "/api/v1/auth/login")
+    public ResponseEntity<AuthResponse> login(
+            @Valid @RequestBody LoginRequest loginRequest
+            ) {
+        return ResponseEntity.ok(accountService.login(loginRequest));
     }
 }
