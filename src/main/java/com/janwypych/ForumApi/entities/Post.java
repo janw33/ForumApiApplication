@@ -6,32 +6,30 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "accounts")
-public class Account {
+@Table(name = "posts")
+public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50, unique = true)
-    private String username;
+    @Column(nullable = false, length = 50)
+    private String title;
 
-    @Column(nullable = false, length = 100, unique = true)
-    private String email;
-
-    @Column(nullable = false, length = 100)
-    private String password;
+    @Column(nullable = false)
+    private String content;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @OneToMany(mappedBy = "author")
-    private List <Post> posts;
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private Account author;
 }

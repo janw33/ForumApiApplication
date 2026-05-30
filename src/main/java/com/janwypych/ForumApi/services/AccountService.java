@@ -1,5 +1,6 @@
 package com.janwypych.ForumApi.services;
 
+import com.janwypych.ForumApi.security.JwtService;
 import com.janwypych.ForumApi.dtos.AuthResponse;
 import com.janwypych.ForumApi.dtos.CreateAccountRequest;
 import com.janwypych.ForumApi.dtos.LoginRequest;
@@ -8,7 +9,6 @@ import com.janwypych.ForumApi.exceptions.AccountAlreadyExistsException;
 import com.janwypych.ForumApi.exceptions.InvalidCredentialsException;
 import com.janwypych.ForumApi.mappers.AccountMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

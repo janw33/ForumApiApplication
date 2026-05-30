@@ -1,6 +1,7 @@
 package com.janwypych.ForumApi.services;
 
 import com.janwypych.ForumApi.TestDataUtil;
+import com.janwypych.ForumApi.security.JwtService;
 import com.janwypych.ForumApi.dtos.AuthResponse;
 import com.janwypych.ForumApi.dtos.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
