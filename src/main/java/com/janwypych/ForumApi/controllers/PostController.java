@@ -29,7 +29,7 @@ public class PostController {
         Authentication authentication =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        Long userId = (Long) authentication.getPrincipal();
+        Long userId =  Long.parseLong(authentication.getName());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(postService.create(userId, createPostRequest));
     }

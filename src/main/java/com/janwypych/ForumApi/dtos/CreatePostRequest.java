@@ -17,5 +17,6 @@ public class CreatePostRequest {
     private String title;
 
     @NotBlank
+    @Size(min = 2, max = 5000)
     private String content;
 }
