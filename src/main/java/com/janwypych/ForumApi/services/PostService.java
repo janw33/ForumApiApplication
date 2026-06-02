@@ -9,10 +9,12 @@ import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Service
 public class PostService {
     private final PostMapper postMapper;
     private final PostRepository postRepository;
@@ -33,6 +35,10 @@ public class PostService {
         post.setAuthor(author);
         post.setCreatedAt(LocalDateTime.now());
         Post savedPost = postRepository.save(post);
-        return postMapper.mapFromPostToPostResponse(savedPost);
+
+        PostResponse postResponse = postMapper.mapFromPostToPostResponse(savedPost);
+        postResponse.setAuthorId(savedPost.getAuthor().getId());
+        postResponse.setAuthorUsername(savedPost.getAuthor().getUsername());
+        return postResponse;
     }
 }

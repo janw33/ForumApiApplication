@@ -19,6 +19,7 @@ public class PostResponse {
     private String title;
     private String content;
     private LocalDateTime createdAt;
-    private Account author;
+    private Long authorId;
+    private String authorUsername;
 }
 
