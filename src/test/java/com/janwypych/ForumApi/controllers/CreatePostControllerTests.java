@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -20,6 +22,7 @@ import java.time.LocalDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -35,13 +38,13 @@ public class CreatePostControllerTests {
     private PostService postService;
 
     @Test
-    @WithMockUser
     public void testThatCreatePostReturnsHttp400WhenTitleIsBlank() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         createPostRequest.setTitle("");
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -50,13 +53,13 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    @WithMockUser
     public void testThatCreatePostReturnsHttp400WhenTitleTooShort() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         createPostRequest.setTitle("a");
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -65,13 +68,13 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    @WithMockUser
     public void testThatCreatePostReturnsHttp400WhenTitleTooLong() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
-        createPostRequest.setTitle("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        createPostRequest.setTitle("a".repeat(51));
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -80,13 +83,13 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    @WithMockUser
     public void testThatCreatePostReturnsHttp400WhenContentIsBlank() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         createPostRequest.setContent("");
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -95,13 +98,13 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    @WithMockUser
     public void testThatCreatePostReturnsHttp400WhenContentIsTooShort() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         createPostRequest.setContent("a");
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -110,13 +113,13 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    @WithMockUser
     public void testThatCreatePostReturnsHttp400WhenContentIsTooLong() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         createPostRequest.setContent("a".repeat(5001));
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -125,12 +128,12 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    @WithMockUser(username = "1")
     public void testThatCreatePostReturnsHttp201WhenRequestIsValid() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -138,7 +141,6 @@ public class CreatePostControllerTests {
         );
     }
     @Test
-    @WithMockUser(username = "1")
     public void testThatCreatePostReturnsPostResponseWhenRequestIsValid() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
@@ -157,6 +159,7 @@ public class CreatePostControllerTests {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
