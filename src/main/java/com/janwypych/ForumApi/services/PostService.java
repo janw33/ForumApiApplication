@@ -5,10 +5,12 @@ import com.janwypych.ForumApi.dtos.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
+import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -40,5 +42,12 @@ public class PostService {
         postResponse.setAuthorId(savedPost.getAuthor().getId());
         postResponse.setAuthorUsername(savedPost.getAuthor().getUsername());
         return postResponse;
+    }
+
+    public PostResponse getPost(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+        return postMapper.mapFromPostToPostResponse(post);
     }
 }
