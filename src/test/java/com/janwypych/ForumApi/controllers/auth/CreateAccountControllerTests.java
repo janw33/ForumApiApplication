@@ -2,8 +2,8 @@ package com.janwypych.ForumApi.controllers.auth;
 
 
 import com.janwypych.ForumApi.TestDataUtil;
-import com.janwypych.ForumApi.dtos.AuthResponse;
-import com.janwypych.ForumApi.dtos.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.auth.AuthResponse;
+import com.janwypych.ForumApi.dtos.auth.CreateAccountRequest;
 import com.janwypych.ForumApi.exceptions.AccountAlreadyExistsException;
 import com.janwypych.ForumApi.services.AccountService;
 import org.junit.jupiter.api.Test;

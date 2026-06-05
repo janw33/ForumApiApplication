@@ -1,4 +1,4 @@
-package com.janwypych.ForumApi.dtos;
+package com.janwypych.ForumApi.dtos.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

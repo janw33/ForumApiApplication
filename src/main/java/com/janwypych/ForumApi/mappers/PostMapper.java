@@ -1,7 +1,7 @@
 package com.janwypych.ForumApi.mappers;
 
-import com.janwypych.ForumApi.dtos.CreatePostRequest;
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Post;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

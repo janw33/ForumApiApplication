@@ -1,8 +1,6 @@
-package com.janwypych.ForumApi.dtos;
+package com.janwypych.ForumApi.dtos.post;
 
 
-import com.janwypych.ForumApi.entities.Account;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,8 +1,8 @@
 package com.janwypych.ForumApi.controllers.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
-import com.janwypych.ForumApi.dtos.CreatePostRequest;
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;

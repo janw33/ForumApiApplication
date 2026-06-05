@@ -1,8 +1,8 @@
 package com.janwypych.ForumApi.controllers;
 
-import com.janwypych.ForumApi.dtos.CreatePostRequest;
-import com.janwypych.ForumApi.dtos.EditPostRequest;
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.post.EditPostRequest;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

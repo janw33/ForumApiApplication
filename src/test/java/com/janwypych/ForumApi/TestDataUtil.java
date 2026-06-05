@@ -1,9 +1,9 @@
 package com.janwypych.ForumApi;
 
-import com.janwypych.ForumApi.dtos.CreateAccountRequest;
-import com.janwypych.ForumApi.dtos.CreatePostRequest;
-import com.janwypych.ForumApi.dtos.EditPostRequest;
-import com.janwypych.ForumApi.dtos.LoginRequest;
+import com.janwypych.ForumApi.dtos.auth.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.post.EditPostRequest;
+import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
 

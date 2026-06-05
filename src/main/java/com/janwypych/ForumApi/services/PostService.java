@@ -1,8 +1,8 @@
 package com.janwypych.ForumApi.services;
 
-import com.janwypych.ForumApi.dtos.CreatePostRequest;
-import com.janwypych.ForumApi.dtos.EditPostRequest;
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.post.EditPostRequest;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
@@ -11,7 +11,6 @@ import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

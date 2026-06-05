@@ -1,6 +1,6 @@
 package com.janwypych.ForumApi.mappers;
 
-import com.janwypych.ForumApi.dtos.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.auth.CreateAccountRequest;
 import com.janwypych.ForumApi.entities.Account;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

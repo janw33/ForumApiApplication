@@ -1,7 +1,7 @@
 package com.janwypych.ForumApi.services.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.mappers.PostMapper;

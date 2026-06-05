@@ -1,6 +1,6 @@
 package com.janwypych.ForumApi.exceptions;
 
-import com.janwypych.ForumApi.dtos.ErrorResponse;
+import com.janwypych.ForumApi.dtos.error.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

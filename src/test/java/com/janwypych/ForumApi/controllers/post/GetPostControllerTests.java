@@ -1,6 +1,6 @@
 package com.janwypych.ForumApi.controllers.post;
 
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;

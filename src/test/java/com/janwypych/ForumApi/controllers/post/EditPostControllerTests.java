@@ -1,8 +1,8 @@
 package com.janwypych.ForumApi.controllers.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
-import com.janwypych.ForumApi.dtos.EditPostRequest;
-import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.dtos.post.EditPostRequest;
+import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.services.PostService;

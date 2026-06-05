@@ -1,5 +1,4 @@
-package com.janwypych.ForumApi.dtos;
-
+package com.janwypych.ForumApi.dtos.post;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,11 +11,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class EditPostRequest {
+public class CreatePostRequest {
+    @NotBlank
     @Size(min = 2, max = 50)
     private String title;
 
+    @NotBlank
     @Size(min = 2, max = 5000)
     private String content;
-
 }

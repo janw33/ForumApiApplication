@@ -1,9 +1,9 @@
 package com.janwypych.ForumApi.services;
 
 import com.janwypych.ForumApi.security.JwtService;
-import com.janwypych.ForumApi.dtos.AuthResponse;
-import com.janwypych.ForumApi.dtos.CreateAccountRequest;
-import com.janwypych.ForumApi.dtos.LoginRequest;
+import com.janwypych.ForumApi.dtos.auth.AuthResponse;
+import com.janwypych.ForumApi.dtos.auth.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.exceptions.AccountAlreadyExistsException;
 import com.janwypych.ForumApi.exceptions.InvalidCredentialsException;

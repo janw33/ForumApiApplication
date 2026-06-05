@@ -1,8 +1,8 @@
 package com.janwypych.ForumApi.controllers;
 
-import com.janwypych.ForumApi.dtos.AuthResponse;
-import com.janwypych.ForumApi.dtos.CreateAccountRequest;
-import com.janwypych.ForumApi.dtos.LoginRequest;
+import com.janwypych.ForumApi.dtos.auth.AuthResponse;
+import com.janwypych.ForumApi.dtos.auth.CreateAccountRequest;
+import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.services.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

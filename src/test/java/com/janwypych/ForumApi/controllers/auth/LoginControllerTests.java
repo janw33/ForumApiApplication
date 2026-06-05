@@ -1,8 +1,8 @@
 package com.janwypych.ForumApi.controllers.auth;
 
 import com.janwypych.ForumApi.TestDataUtil;
-import com.janwypych.ForumApi.dtos.AuthResponse;
-import com.janwypych.ForumApi.dtos.LoginRequest;
+import com.janwypych.ForumApi.dtos.auth.AuthResponse;
+import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.exceptions.InvalidCredentialsException;
 import com.janwypych.ForumApi.services.AccountService;
 import org.junit.jupiter.api.Test;
