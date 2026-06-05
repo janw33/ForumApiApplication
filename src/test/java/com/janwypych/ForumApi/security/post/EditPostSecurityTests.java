@@ -1,4 +1,4 @@
-package com.janwypych.ForumApi.security;
+package com.janwypych.ForumApi.security.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.post.EditPostRequest;
