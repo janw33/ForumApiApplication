@@ -1,6 +1,7 @@
 package com.janwypych.ForumApi.controllers;
 
 import com.janwypych.ForumApi.dtos.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.EditPostRequest;
 import com.janwypych.ForumApi.dtos.PostResponse;
 import com.janwypych.ForumApi.services.PostService;
 import jakarta.validation.Valid;
@@ -45,5 +46,18 @@ public class PostController {
     @GetMapping
     public Page <PostResponse> getPosts(Pageable pageable) {
         return postService.getPosts(pageable);
+    }
+
+    @PatchMapping(path = "/{id}")
+    public ResponseEntity<PostResponse> editPost(
+            @Valid @RequestBody EditPostRequest editPostRequest,
+            @PathVariable("id") Long postId
+    ) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        Long userId =  Long.parseLong(authentication.getName());
+
+        return ResponseEntity.ok(postService.updatePost(userId, postId, editPostRequest));
     }
 }

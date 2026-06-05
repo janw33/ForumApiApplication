@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handePostNotFoundException(
+    public ResponseEntity<ErrorResponse> handlePostNotFoundException(
             PostNotFoundException postNotFoundException,
             HttpServletRequest request) {
 
@@ -73,5 +73,21 @@ public class GlobalExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(UserNotAuthorException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotAuthorException(
+            UserNotAuthorException userNotAuthorException,
+            HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("USER_NOT_AUTHOR")
+                .message(userNotAuthorException.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 }

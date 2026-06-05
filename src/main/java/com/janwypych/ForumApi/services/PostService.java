@@ -1,14 +1,17 @@
 package com.janwypych.ForumApi.services;
 
 import com.janwypych.ForumApi.dtos.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.EditPostRequest;
 import com.janwypych.ForumApi.dtos.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
+import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,5 +57,23 @@ public class PostService {
     public Page <PostResponse> getPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         return posts.map(postMapper::mapFromPostToPostResponse);
+    }
+
+    public PostResponse updatePost(Long userId, Long postId, EditPostRequest editPostRequest) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+        if(!post.getAuthor().getId().equals(userId))
+            throw new UserNotAuthorException("User not author");
+
+        if (editPostRequest.getTitle() != null) {
+            post.setTitle(editPostRequest.getTitle());
+        }
+
+        if (editPostRequest.getContent() != null) {
+            post.setContent(editPostRequest.getContent());
+        }
+
+        return postMapper.mapFromPostToPostResponse(postRepository.save(post));
     }
 }
