@@ -76,4 +76,14 @@ public class PostService {
 
         return postMapper.mapFromPostToPostResponse(postRepository.save(post));
     }
+
+    public void deletePost(Long userId, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+        if(!post.getAuthor().getId().equals(userId))
+            throw new UserNotAuthorException("User not author");
+
+        postRepository.delete(post);
+    }
 }

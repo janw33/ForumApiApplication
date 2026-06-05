@@ -13,8 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/posts")
 public class PostController {
@@ -59,5 +57,19 @@ public class PostController {
         Long userId =  Long.parseLong(authentication.getName());
 
         return ResponseEntity.ok(postService.updatePost(userId, postId, editPostRequest));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deletePost(
+            @PathVariable("id") Long postId
+    ) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        Long userId =  Long.parseLong(authentication.getName());
+
+        postService.deletePost(userId, postId);
+
+        return ResponseEntity.noContent().build();
     }
 }
