@@ -3,6 +3,7 @@ package com.janwypych.ForumApi.controllers;
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.CreatePostRequest;
 import com.janwypych.ForumApi.dtos.PostResponse;
+import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,9 +129,41 @@ public class CreatePostControllerTests {
     }
 
     @Test
-    public void testThatCreatePostReturnsHttp201WhenRequestIsValid() throws Exception {
+    public void testThatCreatePostReturnsHttp404WhenAccountIsNotFound() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
+
+        when(postService.create(1L, createPostRequest))
+                .thenThrow(AccountNotFoundException.class);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/api/v1/posts")
+                        .with(user("1"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createPostJson)
+        ).andExpect(
+                status().isNotFound()
+        );
+    }
+
+    @Test
+    public void testThatCreatePostReturnsHttp201WhenRequestIsValid() throws Exception {
+        CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
+
+        PostResponse postResponse = PostResponse.builder()
+                .id(1L)
+                .title(createPostRequest.getTitle())
+                .content(createPostRequest.getContent())
+                .authorId(1L)
+                .createdAt(LocalDateTime.now())
+                .authorUsername("test")
+                .build();
+
+        String createPostJson = objectMapper.writeValueAsString(createPostRequest);
+
+        when(postService.create(1L, createPostRequest))
+                .thenReturn(postResponse);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
                         .with(user("1"))

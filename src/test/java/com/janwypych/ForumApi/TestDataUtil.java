@@ -2,6 +2,7 @@ package com.janwypych.ForumApi;
 
 import com.janwypych.ForumApi.dtos.CreateAccountRequest;
 import com.janwypych.ForumApi.dtos.CreatePostRequest;
+import com.janwypych.ForumApi.dtos.EditPostRequest;
 import com.janwypych.ForumApi.dtos.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
@@ -46,6 +47,13 @@ public final class TestDataUtil {
                 .content("testContent")
                 .author(author)
                 .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static EditPostRequest createEditPostRequest() {
+        return EditPostRequest.builder()
+                .title("test")
+                .content("testContent")
                 .build();
     }
 }
