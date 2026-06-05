@@ -5,6 +5,7 @@ import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
 import com.janwypych.ForumApi.dtos.post.EditPostRequest;
 import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
+import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
 
 import java.time.LocalDateTime;
@@ -54,6 +55,16 @@ public final class TestDataUtil {
         return EditPostRequest.builder()
                 .title("test")
                 .content("testContent")
+                .build();
+    }
+
+    public static Comment createComment(Account author, Post post) {
+        return Comment.builder()
+                .id(1L)
+                .createdAt(LocalDateTime.now())
+                .content("test")
+                .author(author)
+                .post(post)
                 .build();
     }
 }
