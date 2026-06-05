@@ -10,11 +10,11 @@ import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class PostService {
@@ -49,5 +49,10 @@ public class PostService {
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
         return postMapper.mapFromPostToPostResponse(post);
+    }
+
+    public Page <PostResponse> getPosts(Pageable pageable) {
+        Page<Post> posts = postRepository.findAll(pageable);
+        return posts.map(postMapper::mapFromPostToPostResponse);
     }
 }
