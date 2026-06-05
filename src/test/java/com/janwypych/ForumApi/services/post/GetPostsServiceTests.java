@@ -1,27 +1,31 @@
-package com.janwypych.ForumApi.services;
+package com.janwypych.ForumApi.services.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
-import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.PostRepository;
+import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
-import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class GetPostServiceTests {
+public class GetPostsServiceTests {
     @Mock
     private PostMapper postMapper;
 
@@ -32,17 +36,9 @@ public class GetPostServiceTests {
     private PostService postService;
 
     @Test
-    public void testThatGetPostThrowsPostNotFoundExceptionWhenFindPostByIdReturnsEmptyOptional() {
-        when(postRepository.findById(1L))
-                .thenReturn(Optional.empty());
+    public void testThatGetPostsReturnsPageOfPostResponses() {
+        Pageable pageable = PageRequest.of(0, 10);
 
-        assertThrows(
-                PostNotFoundException.class,
-                () -> postService.getPost(1L)
-        );
-    }
-    @Test
-    public void testThatGetPostReturnPostResponseWhenIdIsValid() {
         Account account = TestDataUtil.createAccount();
         Post post = TestDataUtil.createPost(account);
 
@@ -51,21 +47,24 @@ public class GetPostServiceTests {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .authorId(post.getAuthor().getId())
-                .createdAt(post.getCreatedAt())
                 .authorUsername(post.getAuthor().getUsername())
+                .createdAt(post.getCreatedAt())
                 .build();
 
-        when(postRepository.findById(1L))
-                .thenReturn(Optional.of(post));
+        Page<Post> posts = new PageImpl<>(List.of(post));
+
+        when(postRepository.findAll(pageable))
+                .thenReturn(posts);
 
         when(postMapper.mapFromPostToPostResponse(post))
                 .thenReturn(postResponse);
 
-        PostResponse result = postService.getPost(1L);
+        Page<PostResponse> result = postService.getPosts(pageable);
 
-        assertEquals(postResponse, result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(postResponse, result.getContent().getFirst());
 
-        verify(postRepository).findById(1L);
+        verify(postRepository).findAll(pageable);
         verify(postMapper).mapFromPostToPostResponse(post);
     }
 }

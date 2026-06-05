@@ -1,4 +1,4 @@
-package com.janwypych.ForumApi.controllers;
+package com.janwypych.ForumApi.controllers.auth;
 
 
 import com.janwypych.ForumApi.TestDataUtil;

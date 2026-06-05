@@ -1,4 +1,4 @@
-package com.janwypych.ForumApi.services;
+package com.janwypych.ForumApi.services.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.CreatePostRequest;
@@ -9,6 +9,7 @@ import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
+import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

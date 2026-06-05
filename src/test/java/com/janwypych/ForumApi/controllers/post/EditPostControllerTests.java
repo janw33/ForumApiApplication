@@ -1,4 +1,4 @@
-package com.janwypych.ForumApi.controllers;
+package com.janwypych.ForumApi.controllers.post;
 
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.EditPostRequest;

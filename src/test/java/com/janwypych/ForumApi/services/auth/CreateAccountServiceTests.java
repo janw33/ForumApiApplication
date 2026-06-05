@@ -1,4 +1,4 @@
-package com.janwypych.ForumApi.services;
+package com.janwypych.ForumApi.services.auth;
 
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.security.JwtService;
@@ -8,6 +8,7 @@ import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.exceptions.AccountAlreadyExistsException;
 import com.janwypych.ForumApi.mappers.AccountMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
+import com.janwypych.ForumApi.services.AccountService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
