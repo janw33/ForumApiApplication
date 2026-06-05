@@ -24,16 +24,16 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-public class CreatePostControllerTests {
-    @Autowired
-    private MockMvc mockMvc;
+    @AutoConfigureMockMvc
+    public class CreatePostControllerTests {
+        @Autowired
+        private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        @Autowired
+        private ObjectMapper objectMapper;
 
-    @MockitoBean
-    private PostService postService;
+        @MockitoBean
+        private PostService postService;
 
     @Test
     public void testThatCreatePostReturnsHttp400WhenTitleIsBlank() throws Exception {
