@@ -4,6 +4,8 @@ import com.janwypych.ForumApi.dtos.comment.CommentResponse;
 import com.janwypych.ForumApi.dtos.comment.CreateCommentRequest;
 import com.janwypych.ForumApi.services.CommentService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,5 +32,13 @@ public class CommentController {
         Long userId =  Long.parseLong(authentication.getName());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(postId, userId, createCommentRequest));
+    }
+
+    @GetMapping(path = "/{postId}/comments")
+    public Page<CommentResponse> getComments(
+            @PathVariable("postId") Long postId,
+            Pageable pageable
+    ) {
+        return commentService.getComments(postId, pageable);
     }
 }

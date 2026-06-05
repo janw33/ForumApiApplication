@@ -12,10 +12,13 @@ import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -46,5 +49,14 @@ public class CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         return commentMapper.mapFromCommentToCommentResponse(savedComment);
+    }
+
+    public Page<CommentResponse> getComments(Long postId, Pageable pageable) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+        Page<Comment> comments = commentRepository.findAllByPostId(postId, pageable);
+
+        return comments.map(commentMapper::mapFromCommentToCommentResponse);
     }
 }
