@@ -56,4 +56,20 @@ public class CommentController {
 
         return ResponseEntity.ok(commentService.editComment(userId, postId, commentId, editCommentRequest));
     }
+
+    @DeleteMapping(path = "/{postId}/comments/{commentId}")
+    public ResponseEntity<Void> editComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId
+    ) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        Long userId =  Long.parseLong(authentication.getName());
+
+        commentService.deleteComment(userId, postId, commentId);
+
+        return ResponseEntity.noContent().build();
+
+    }
 }

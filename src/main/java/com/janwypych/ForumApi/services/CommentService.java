@@ -73,15 +73,34 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
 
-        if(!comment.getPost().getId().equals(postId))
+        if (!comment.getPost().getId().equals(postId))
             throw new CommentNotFoundException("comment not found");
 
-        if(!comment.getAuthor().getId().equals(userId))
+        if (!comment.getAuthor().getId().equals(userId))
             throw new UserNotAuthorException("User is not author of this comment");
 
-        if(editCommentRequest.getContent() != null)
+        if (editCommentRequest.getContent() != null)
             comment.setContent(editCommentRequest.getContent());
 
         return commentMapper.mapFromCommentToCommentResponse(commentRepository.save(comment));
+    }
+
+    public void deleteComment(Long userId, Long postId, Long commentId) {
+        accountRepository.findById(userId)
+                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
+
+        if (!comment.getPost().getId().equals(postId))
+            throw new CommentNotFoundException("comment not found");
+
+        if (!comment.getAuthor().getId().equals(userId) || !post.getAuthor().getId().equals(userId))
+            throw new UserNotAuthorException("User is not author");
+
+        commentRepository.deleteById(commentId);
     }
 }
