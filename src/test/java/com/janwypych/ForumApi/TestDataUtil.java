@@ -33,6 +33,23 @@ public final class TestDataUtil {
                 .password("hashedPassword")
                 .build();
     }
+    public static Account createAccount2() {
+        return Account.builder()
+                .id(2L)
+                .username("test1")
+                .email("test1@test.com")
+                .password("hashedPassword1")
+                .build();
+    }
+    public static Account createAccount3() {
+        return Account.builder()
+                .id(3L)
+                .username("test2")
+                .email("test2@test.com")
+                .password("hashedPassword2")
+                .build();
+    }
+
 
     public static CreatePostRequest createPostRequest() {
         return CreatePostRequest.builder()

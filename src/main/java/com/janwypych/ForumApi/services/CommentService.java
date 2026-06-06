@@ -98,7 +98,7 @@ public class CommentService {
         if (!comment.getPost().getId().equals(postId))
             throw new CommentNotFoundException("comment not found");
 
-        if (!comment.getAuthor().getId().equals(userId) || !post.getAuthor().getId().equals(userId))
+        if (!comment.getAuthor().getId().equals(userId) && !post.getAuthor().getId().equals(userId))
             throw new UserNotAuthorException("User is not author");
 
         commentRepository.deleteById(commentId);
