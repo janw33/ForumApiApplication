@@ -2,6 +2,7 @@ package com.janwypych.ForumApi.controllers;
 
 import com.janwypych.ForumApi.dtos.comment.CommentResponse;
 import com.janwypych.ForumApi.dtos.comment.CreateCommentRequest;
+import com.janwypych.ForumApi.dtos.comment.EditCommentRequest;
 import com.janwypych.ForumApi.services.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -40,5 +41,19 @@ public class CommentController {
             Pageable pageable
     ) {
         return commentService.getComments(postId, pageable);
+    }
+
+    @PatchMapping(path = "/{postId}/comments/{commentId}")
+    public ResponseEntity<CommentResponse> editComment(
+            @PathVariable("postId") Long postId,
+            @PathVariable("commentId") Long commentId,
+            @Valid @RequestBody EditCommentRequest editCommentRequest
+    ) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
+
+        Long userId =  Long.parseLong(authentication.getName());
+
+        return ResponseEntity.ok(commentService.editComment(userId, postId, commentId, editCommentRequest));
     }
 }
