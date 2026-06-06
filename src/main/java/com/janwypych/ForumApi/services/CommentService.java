@@ -67,7 +67,7 @@ public class CommentService {
         accountRepository.findById(userId)
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
 
-        Post post = postRepository.findById(postId)
+        postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
         Comment comment = commentRepository.findById(commentId)
