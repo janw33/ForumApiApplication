@@ -11,6 +11,7 @@ import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,12 +32,9 @@ public class PostService {
         this.accountRepository = accountRepository;
     }
 
-    public PostResponse create(Long userId, CreatePostRequest createPostRequest) {
-        Account author = accountRepository.findById(userId)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
+    public PostResponse create(Account currentUser, CreatePostRequest createPostRequest) {
         Post post = postMapper.mapFromCreatePostRequestToPost(createPostRequest);
-        post.setAuthor(author);
+        post.setAuthor(currentUser);
         post.setCreatedAt(LocalDateTime.now());
         Post savedPost = postRepository.save(post);
 

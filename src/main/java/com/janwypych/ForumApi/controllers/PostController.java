@@ -3,6 +3,7 @@ package com.janwypych.ForumApi.controllers;
 import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
 import com.janwypych.ForumApi.dtos.post.EditPostRequest;
 import com.janwypych.ForumApi.dtos.post.PostResponse;
+import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.services.PostService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,14 +28,10 @@ public class PostController {
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PostResponse> createPost(
+            @AuthenticationPrincipal Account currentUser,
             @Valid @RequestBody CreatePostRequest createPostRequest
             ) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId =  Long.parseLong(authentication.getName());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(postService.create(userId, createPostRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).body(postService.create(currentUser, createPostRequest));
     }
 
     @GetMapping(path = "/{id}")
