@@ -6,12 +6,10 @@ import com.janwypych.ForumApi.dtos.comment.EditCommentRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.CommentNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.mappers.CommentMapper;
-import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import com.janwypych.ForumApi.services.CommentService;
@@ -33,9 +31,6 @@ public class EditCommentServiceTests {
     private CommentMapper commentMapper;
 
     @Mock
-    private AccountRepository accountRepository;
-
-    @Mock
     private PostRepository postRepository;
 
     @Mock
@@ -44,42 +39,20 @@ public class EditCommentServiceTests {
     @InjectMocks
     private CommentService commentService;
 
-    @Test
-    public void testThatEditCommentThrowsAccountNotFoundExceptionWhenAccountIDoesntExist() {
-        Long userId = 1L;
-        Long postId = 1L;
-        Long commentId = 1L;
-        EditCommentRequest editCommentRequest = new EditCommentRequest("test");
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.empty());
-
-        assertThrows(
-                AccountNotFoundException.class,
-                () -> commentService.editComment(userId, postId, commentId, editCommentRequest)
-        );
-
-        verify(commentRepository, never()).save(any());
-    }
 
     @Test
     public void testThatEditCommentThrowsPostNotFoundExceptionWhenPostIsDoesntExist() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
         EditCommentRequest editCommentRequest = new EditCommentRequest("test");
-
-        Account author = TestDataUtil.createAccount();
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.empty());
 
         assertThrows(
                 PostNotFoundException.class,
-                () -> commentService.editComment(userId, postId, commentId, editCommentRequest)
+                () -> commentService.editComment(account, postId, commentId, editCommentRequest)
         );
 
         verify(commentRepository, never()).save(any());
@@ -87,16 +60,12 @@ public class EditCommentServiceTests {
 
     @Test
     public void testThatEditCommentThrowsCommentNotFoundExceptionWhenCommentDoesntExist() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
         EditCommentRequest editCommentRequest = new EditCommentRequest("test");
-
-        Account author = TestDataUtil.createAccount();
-        Post post = TestDataUtil.createPost(author);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
+        ;
+        Post post = TestDataUtil.createPost(account);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -106,7 +75,7 @@ public class EditCommentServiceTests {
 
         assertThrows(
                 CommentNotFoundException.class,
-                () -> commentService.editComment(userId, postId, commentId, editCommentRequest)
+                () -> commentService.editComment(account, postId, commentId, editCommentRequest)
         );
 
         verify(commentRepository, never()).save(any());
@@ -114,18 +83,14 @@ public class EditCommentServiceTests {
 
     @Test
     public void testThatEditCommentThrowsCommentNotFoundExceptionWhenCommentIsNotInPost() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
         EditCommentRequest editCommentRequest = new EditCommentRequest("test");
 
-        Account author = TestDataUtil.createAccount();
-        Post post = TestDataUtil.createPost(author);
+        Post post = TestDataUtil.createPost(account);
         post.setId(2L);
-        Comment comment = TestDataUtil.createComment(author, post);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
+        Comment comment = TestDataUtil.createComment(account, post);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -135,7 +100,7 @@ public class EditCommentServiceTests {
 
         assertThrows(
                 CommentNotFoundException.class,
-                () -> commentService.editComment(userId, postId, commentId, editCommentRequest)
+                () -> commentService.editComment(account, postId, commentId, editCommentRequest)
         );
 
         verify(commentRepository, never()).save(any());
@@ -143,18 +108,14 @@ public class EditCommentServiceTests {
 
     @Test
     public void testThatEditCommentThrowsUserNotAuthorExceptionWhenUserIsNotAuthor() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
         EditCommentRequest editCommentRequest = new EditCommentRequest("test");
 
-        Account author = TestDataUtil.createAccount();
-        author.setId(2L);
+        Account author = TestDataUtil.createAccount2();
         Post post = TestDataUtil.createPost(author);
         Comment comment = TestDataUtil.createComment(author, post);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -164,7 +125,7 @@ public class EditCommentServiceTests {
 
         assertThrows(
                 UserNotAuthorException.class,
-                () -> commentService.editComment(userId, postId, commentId, editCommentRequest)
+                () -> commentService.editComment(account, postId, commentId, editCommentRequest)
         );
 
         verify(commentRepository, never()).save(any());
@@ -172,14 +133,14 @@ public class EditCommentServiceTests {
 
     @Test
     public void testThatEditCommentReturnsCommentResponse() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
         EditCommentRequest editCommentRequest = new EditCommentRequest("test");
 
-        Account author = TestDataUtil.createAccount();
-        Post post = TestDataUtil.createPost(author);
-        Comment comment = TestDataUtil.createComment(author, post);
+        Post post = TestDataUtil.createPost(account);
+        Comment comment = TestDataUtil.createComment(account, post);
+
         CommentResponse commentResponse = CommentResponse.builder()
                 .id(comment.getId())
                 .createdAt(comment.getCreatedAt())
@@ -187,9 +148,6 @@ public class EditCommentServiceTests {
                 .authorUsername(comment.getAuthor().getUsername())
                 .content(editCommentRequest.getContent())
                 .build();
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -205,7 +163,7 @@ public class EditCommentServiceTests {
         when(commentMapper.mapFromCommentToCommentResponse(comment))
                 .thenReturn(commentResponse);
 
-        CommentResponse result = commentService.editComment(userId, postId, commentId, editCommentRequest);
+        CommentResponse result = commentService.editComment(account, postId, commentId, editCommentRequest);
 
         assertEquals(commentResponse, result);
 

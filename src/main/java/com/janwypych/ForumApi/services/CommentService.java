@@ -61,10 +61,7 @@ public class CommentService {
         return comments.map(commentMapper::mapFromCommentToCommentResponse);
     }
 
-    public CommentResponse editComment(Long userId, Long postId, Long commentId, EditCommentRequest editCommentRequest) {
-        accountRepository.findById(userId)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
+    public CommentResponse editComment(Account currentUser, Long postId, Long commentId, EditCommentRequest editCommentRequest) {
         postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
@@ -74,7 +71,7 @@ public class CommentService {
         if (!comment.getPost().getId().equals(postId))
             throw new CommentNotFoundException("comment not found");
 
-        if (!comment.getAuthor().getId().equals(userId))
+        if (!comment.getAuthor().getId().equals(currentUser.getId()))
             throw new UserNotAuthorException("User is not author of this comment");
 
         if (editCommentRequest.getContent() != null)

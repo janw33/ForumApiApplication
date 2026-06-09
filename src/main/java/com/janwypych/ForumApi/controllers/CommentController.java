@@ -44,17 +44,14 @@ public class CommentController {
     }
 
     @PatchMapping(path = "/{postId}/comments/{commentId}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CommentResponse> editComment(
+            @AuthenticationPrincipal Account currentUser,
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId,
             @Valid @RequestBody EditCommentRequest editCommentRequest
     ) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId =  Long.parseLong(authentication.getName());
-
-        return ResponseEntity.ok(commentService.editComment(userId, postId, commentId, editCommentRequest));
+        return ResponseEntity.ok(commentService.editComment(currentUser, postId, commentId, editCommentRequest));
     }
 
     @DeleteMapping(path = "/{postId}/comments/{commentId}")
