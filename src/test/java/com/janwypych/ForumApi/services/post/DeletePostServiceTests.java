@@ -21,8 +21,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DeletePostServiceTests {
-
-
     @Mock
     private PostRepository postRepository;
 
