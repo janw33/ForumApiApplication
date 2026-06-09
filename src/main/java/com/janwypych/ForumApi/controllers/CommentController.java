@@ -44,7 +44,7 @@ public class CommentController {
     }
 
     @PatchMapping(path = "/{postId}/comments/{commentId}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<CommentResponse> editComment(
             @AuthenticationPrincipal Account currentUser,
             @PathVariable("postId") Long postId,
@@ -55,18 +55,14 @@ public class CommentController {
     }
 
     @DeleteMapping(path = "/{postId}/comments/{commentId}")
-    public ResponseEntity<Void> editComment(
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public ResponseEntity<Void> deleteComment(
+            @AuthenticationPrincipal Account currentUser,
             @PathVariable("postId") Long postId,
             @PathVariable("commentId") Long commentId
     ) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId =  Long.parseLong(authentication.getName());
-
-        commentService.deleteComment(userId, postId, commentId);
+        commentService.deleteComment(currentUser, postId, commentId);
 
         return ResponseEntity.noContent().build();
-
     }
 }

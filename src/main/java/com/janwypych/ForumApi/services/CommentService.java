@@ -6,10 +6,8 @@ import com.janwypych.ForumApi.dtos.comment.EditCommentRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
-import com.janwypych.ForumApi.exceptions.CommentNotFoundException;
-import com.janwypych.ForumApi.exceptions.PostNotFoundException;
-import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
+import com.janwypych.ForumApi.entities.enums.Role;
+import com.janwypych.ForumApi.exceptions.*;
 import com.janwypych.ForumApi.mappers.CommentMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.CommentRepository;
@@ -80,10 +78,7 @@ public class CommentService {
         return commentMapper.mapFromCommentToCommentResponse(commentRepository.save(comment));
     }
 
-    public void deleteComment(Long userId, Long postId, Long commentId) {
-        accountRepository.findById(userId)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
+    public void deleteComment(Account currentUser, Long postId, Long commentId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
@@ -93,9 +88,11 @@ public class CommentService {
         if (!comment.getPost().getId().equals(postId))
             throw new CommentNotFoundException("comment not found");
 
-        if (!comment.getAuthor().getId().equals(userId) && !post.getAuthor().getId().equals(userId))
-            throw new UserNotAuthorException("User is not author");
+        if (!comment.getAuthor().getId().equals(currentUser.getId())
+                && !post.getAuthor().getId().equals(currentUser.getId())
+                && !currentUser.getRole().equals(Role.ADMIN))
+            throw new AccountHasNoPermissionException("Account has no permission");
 
-        commentRepository.deleteById(commentId);
+        commentRepository.delete(comment);
     }
 }

@@ -4,12 +4,8 @@ import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
-import com.janwypych.ForumApi.exceptions.CommentNotFoundException;
-import com.janwypych.ForumApi.exceptions.PostNotFoundException;
-import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
-import com.janwypych.ForumApi.mappers.CommentMapper;
-import com.janwypych.ForumApi.repositories.AccountRepository;
+import com.janwypych.ForumApi.entities.enums.Role;
+import com.janwypych.ForumApi.exceptions.*;
 import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import com.janwypych.ForumApi.services.CommentService;
@@ -28,12 +24,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class DeleteCommentServiceTests {
     @Mock
-    private CommentMapper commentMapper;
-
-    @Mock
-    private AccountRepository accountRepository;
-
-    @Mock
     private PostRepository postRepository;
 
     @Mock
@@ -42,40 +32,19 @@ public class DeleteCommentServiceTests {
     @InjectMocks
     private CommentService commentService;
 
-    @Test
-    public void testThatDeleteCommentThrowsAccountNotFoundExceptionWhenAccountDoesntExist() {
-        Long userId = 1L;
-        Long postId = 1L;
-        Long commentId = 1L;
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.empty());
-
-        assertThrows(
-                AccountNotFoundException.class,
-                () -> commentService.deleteComment(userId, postId, commentId)
-        );
-
-        verify(commentRepository, never()).deleteById(any());
-    }
 
     @Test
     public void testThatDeleteCommentThrowsPostNotFoundExceptionWhenPostDoesntExist() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
-
-        Account author = TestDataUtil.createAccount();
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.empty());
 
         assertThrows(
                 PostNotFoundException.class,
-                () -> commentService.deleteComment(userId, postId, commentId)
+                () -> commentService.deleteComment(account, postId, commentId)
         );
 
         verify(commentRepository, never()).deleteById(any());
@@ -83,15 +52,11 @@ public class DeleteCommentServiceTests {
 
     @Test
     public void testThatDeleteCommentThrowsCommentNotFoundExceptionWhenCommentDoesntExist() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
 
-        Account author = TestDataUtil.createAccount();
-        Post post = TestDataUtil.createPost(author);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
+        Post post = TestDataUtil.createPost(account);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -101,7 +66,7 @@ public class DeleteCommentServiceTests {
 
         assertThrows(
                 CommentNotFoundException.class,
-                () -> commentService.deleteComment(userId, postId, commentId)
+                () -> commentService.deleteComment(account, postId, commentId)
         );
 
         verify(commentRepository, never()).deleteById(any());
@@ -109,17 +74,13 @@ public class DeleteCommentServiceTests {
 
     @Test
     public void testThatDeleteCommentThrowsCommentNotFoundExceptionWhenCommentIsNotInPost() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
 
-        Account author = TestDataUtil.createAccount();
-        Post post = TestDataUtil.createPost(author);
+        Post post = TestDataUtil.createPost(account);
         post.setId(2L);
-        Comment comment = TestDataUtil.createComment(author, post);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(author));
+        Comment comment = TestDataUtil.createComment(account, post);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -129,33 +90,27 @@ public class DeleteCommentServiceTests {
 
         assertThrows(
                 CommentNotFoundException.class,
-                () -> commentService.deleteComment(userId, postId, commentId)
+                () -> commentService.deleteComment(account, postId, commentId)
         );
 
         verify(commentRepository, never()).deleteById(any());
     }
 
     @Test
-    public void testThatDeleteCommentThrowsUserNotAuthorExceptionWhenUserIsNotAuthorOfCommentAndPost() {
-        Long userId = 1L;
+    public void testThatDeleteCommentThrowsAccountHasNoPermissionExceptionWhenUserIsNotAuthorOfCommentAndPostAndIsNotAdmin() {
+        Account currentUser = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
 
-        Account currentUser = TestDataUtil.createAccount();
         currentUser.setId(1L);
 
         Account commentAuthor = TestDataUtil.createAccount2();
-        commentAuthor.setId(10L);
 
         Account postAuthor = TestDataUtil.createAccount3();
-        postAuthor.setId(20L);
 
         Post post = TestDataUtil.createPost(postAuthor);
 
         Comment comment = TestDataUtil.createComment(commentAuthor, post);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(currentUser));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -164,8 +119,8 @@ public class DeleteCommentServiceTests {
                 .thenReturn(Optional.of(comment));
 
         assertThrows(
-                UserNotAuthorException.class,
-                () -> commentService.deleteComment(userId, postId, commentId)
+                AccountHasNoPermissionException.class,
+                () -> commentService.deleteComment(currentUser, postId, commentId)
         );
 
         verify(commentRepository, never()).deleteById(any());
@@ -173,18 +128,13 @@ public class DeleteCommentServiceTests {
 
     @Test
     public void testThatDeleteCommentDeletesCommentWhenUserIsAuthorOfComment() {
-        Long userId = 1L;
+        Account currentUser = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
 
-        Account commentAuthor = TestDataUtil.createAccount();
         Account postAuthor = TestDataUtil.createAccount2();
-
         Post post = TestDataUtil.createPost(postAuthor);
-        Comment comment = TestDataUtil.createComment(commentAuthor, post);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(commentAuthor));
+        Comment comment = TestDataUtil.createComment(currentUser, post);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -192,25 +142,20 @@ public class DeleteCommentServiceTests {
         when(commentRepository.findById(commentId))
                 .thenReturn(Optional.of(comment));
 
-        commentService.deleteComment(userId, postId, commentId);
+        commentService.deleteComment(currentUser, postId, commentId);
 
-        verify(commentRepository).deleteById(commentId);
+        verify(commentRepository).delete(comment);
     }
 
     @Test
     public void testThatDeleteCommentDeletesCommentWhenUserIsAuthorOfPost() {
-        Long userId = 2L;
+        Account currentUser = TestDataUtil.createAccount();
         Long postId = 1L;
         Long commentId = 1L;
 
-        Account commentAuthor = TestDataUtil.createAccount();
-        Account postAuthor = TestDataUtil.createAccount2();
-
-        Post post = TestDataUtil.createPost(postAuthor);
+        Account commentAuthor = TestDataUtil.createAccount2();
+        Post post = TestDataUtil.createPost(currentUser);
         Comment comment = TestDataUtil.createComment(commentAuthor, post);
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(postAuthor));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -218,8 +163,32 @@ public class DeleteCommentServiceTests {
         when(commentRepository.findById(commentId))
                 .thenReturn(Optional.of(comment));
 
-        commentService.deleteComment(userId, postId, commentId);
+        commentService.deleteComment(currentUser, postId, commentId);
 
-        verify(commentRepository).deleteById(commentId);
+        verify(commentRepository).delete(comment);
+    }
+
+    @Test
+    public void testThatDeleteCommentDeletesCommentWhenUserIsAdmin() {
+        Account currentUser = TestDataUtil.createAccount();
+        currentUser.setRole(Role.ADMIN);
+        Long postId = 1L;
+        Long commentId = 1L;
+
+        Account postAuthor = TestDataUtil.createAccount2();
+        Account commentAuthor = TestDataUtil.createAccount3();
+
+        Post post = TestDataUtil.createPost(postAuthor);
+        Comment comment = TestDataUtil.createComment(commentAuthor, post);
+
+        when(postRepository.findById(postId))
+                .thenReturn(Optional.of(post));
+
+        when(commentRepository.findById(commentId))
+                .thenReturn(Optional.of(comment));
+
+        commentService.deleteComment(currentUser, postId, commentId);
+
+        verify(commentRepository).delete(comment);
     }
 }
