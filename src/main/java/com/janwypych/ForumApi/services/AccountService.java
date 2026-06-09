@@ -1,5 +1,6 @@
 package com.janwypych.ForumApi.services;
 
+import com.janwypych.ForumApi.entities.enums.Role;
 import com.janwypych.ForumApi.security.JwtService;
 import com.janwypych.ForumApi.dtos.auth.AuthResponse;
 import com.janwypych.ForumApi.dtos.auth.CreateAccountRequest;
@@ -41,6 +42,7 @@ public class AccountService {
 
         account.setCreatedAt(LocalDateTime.now());
         account.setPassword(passwordEncoder.encode(account.getPassword()));
+        account.setRole(Role.USER);
 
         Account savedAccount = accountRepository.save(account);
         String token = jwtService.generateToken(savedAccount);

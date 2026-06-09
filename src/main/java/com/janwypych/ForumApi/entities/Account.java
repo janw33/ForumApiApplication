@@ -1,5 +1,6 @@
 package com.janwypych.ForumApi.entities;
 
+import com.janwypych.ForumApi.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +32,7 @@ public class Account {
 
     @OneToMany(mappedBy = "author")
     private List <Post> posts;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }
