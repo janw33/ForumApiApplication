@@ -35,7 +35,7 @@ public class EditPostServiceTests {
 
     @Test
     public void testThatEditPostThrowsPostNotFoundExceptionWhenPostDoesNotExist() {
-        Long userId = 1L;
+        Account currentUser = TestDataUtil.createAccount();
         Long postId = 1L;
         EditPostRequest editPostRequest = TestDataUtil.createEditPostRequest();
 
@@ -44,7 +44,7 @@ public class EditPostServiceTests {
 
         assertThrows(
                 PostNotFoundException.class,
-                () -> postService.updatePost(userId, postId, editPostRequest)
+                () -> postService.updatePost(currentUser, postId, editPostRequest)
         );
 
         verify(postRepository).findById(postId);
@@ -53,12 +53,11 @@ public class EditPostServiceTests {
 
     @Test
     public void testThatEditPostThrowsUserNotAuthorExceptionWhenUserIsNotAuthor() {
-        Long userId = 1L;
+        Account currentUser = TestDataUtil.createAccount();
         Long postId = 1L;
         EditPostRequest editPostRequest = TestDataUtil.createEditPostRequest();
 
-        Account author = TestDataUtil.createAccount();
-        author.setId(2L);
+        Account author = TestDataUtil.createAccount2();
 
         Post post = TestDataUtil.createPost(author);
 
@@ -67,7 +66,7 @@ public class EditPostServiceTests {
 
         assertThrows(
                 UserNotAuthorException.class,
-                () -> postService.updatePost(userId, postId, editPostRequest)
+                () -> postService.updatePost(currentUser, postId, editPostRequest)
         );
 
         verify(postRepository).findById(postId);
@@ -76,13 +75,11 @@ public class EditPostServiceTests {
 
     @Test
     public void testThatEditPostReturnsPostResponseWhenUserIsAuthorAndPostIsValid() {
-        Long userId = 1L;
+        Account currentUser = TestDataUtil.createAccount();
         Long postId = 1L;
         EditPostRequest editPostRequest = TestDataUtil.createEditPostRequest();
 
-        Account author = TestDataUtil.createAccount();
-
-        Post post = TestDataUtil.createPost(author);
+        Post post = TestDataUtil.createPost(currentUser);
 
         PostResponse postResponse = PostResponse.builder()
                 .id(post.getId())
@@ -102,7 +99,7 @@ public class EditPostServiceTests {
         when(postMapper.mapFromPostToPostResponse(post))
                 .thenReturn(postResponse);
 
-        PostResponse result = postService.updatePost(userId, postId, editPostRequest);
+        PostResponse result = postService.updatePost(currentUser, postId, editPostRequest);
 
         assertEquals(editPostRequest.getTitle(), result.getTitle());
         assertEquals(editPostRequest.getContent(), result.getContent());

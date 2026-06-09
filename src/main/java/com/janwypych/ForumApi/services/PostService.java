@@ -56,11 +56,11 @@ public class PostService {
         return posts.map(postMapper::mapFromPostToPostResponse);
     }
 
-    public PostResponse updatePost(Long userId, Long postId, EditPostRequest editPostRequest) {
+    public PostResponse updatePost(Account currentAccount, Long postId, EditPostRequest editPostRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
-        if(!post.getAuthor().getId().equals(userId))
+        if (!post.getAuthor().getId().equals(currentAccount.getId()))
             throw new UserNotAuthorException("User not author");
 
         if (editPostRequest.getTitle() != null) {

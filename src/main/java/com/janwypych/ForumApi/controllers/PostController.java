@@ -46,17 +46,15 @@ public class PostController {
         return postService.getPosts(pageable);
     }
 
+
     @PatchMapping(path = "/{id}")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PostResponse> editPost(
+            @AuthenticationPrincipal Account currentUser,
             @Valid @RequestBody EditPostRequest editPostRequest,
             @PathVariable("id") Long postId
     ) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId =  Long.parseLong(authentication.getName());
-
-        return ResponseEntity.ok(postService.updatePost(userId, postId, editPostRequest));
+        return ResponseEntity.ok(postService.updatePost(currentUser, postId, editPostRequest));
     }
 
     @DeleteMapping(path = "/{id}")
