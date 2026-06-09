@@ -14,14 +14,11 @@ import com.janwypych.ForumApi.mappers.CommentMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 public class CommentService {
@@ -37,21 +34,22 @@ public class CommentService {
         this.postRepository = postRepository;
     }
 
-    public CommentResponse createComment(Long postId, Long userId, CreateCommentRequest createCommentRequest) {
-        Account author = accountRepository.findById(userId)
-                .orElseThrow(() -> new AccountNotFoundException("Account not found"));
-
+    public CommentResponse createComment(Account currentUser, Long postId, CreateCommentRequest createCommentRequest) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
         Comment comment = commentMapper.mapFromCreateCommentRequestToComment(createCommentRequest);
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setAuthor(author);
+        comment.setAuthor(currentUser);
         comment.setPost(post);
 
         Comment savedComment = commentRepository.save(comment);
 
-        return commentMapper.mapFromCommentToCommentResponse(savedComment);
+        CommentResponse commentResponse = commentMapper.mapFromCommentToCommentResponse(savedComment);
+        commentResponse.setAuthorId(comment.getAuthor().getId());
+        commentResponse.setAuthorUsername(comment.getAuthor().getUsername());
+
+        return commentResponse;
     }
 
     public Page<CommentResponse> getComments(Long postId, Pageable pageable) {

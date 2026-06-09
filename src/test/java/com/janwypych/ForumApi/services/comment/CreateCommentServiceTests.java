@@ -6,11 +6,9 @@ import com.janwypych.ForumApi.dtos.comment.CreateCommentRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.CommentMapper;
-import com.janwypych.ForumApi.repositories.AccountRepository;
-import com.janwypych.ForumApi.repositories.CommentRepository;
+    import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import com.janwypych.ForumApi.services.CommentService;
 import org.junit.jupiter.api.Test;
@@ -31,9 +29,6 @@ public class CreateCommentServiceTests {
     private CommentMapper commentMapper;
 
     @Mock
-    private AccountRepository accountRepository;
-
-    @Mock
     private PostRepository postRepository;
 
     @Mock
@@ -43,39 +38,17 @@ public class CreateCommentServiceTests {
     private CommentService commentService;
 
     @Test
-    public void testThatCreateCommentThrowsAccountNotFoundExceptionWhenAccountIsNotFound() {
-        Long postId = 1L;
-        Long userId = 1L;
-        CreateCommentRequest createCommentRequest = new CreateCommentRequest("test");
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.empty());
-
-        assertThrows(
-                AccountNotFoundException.class,
-                () -> commentService.createComment(postId, userId, createCommentRequest)
-        );
-
-        verify(commentRepository, never()).save(any());
-    }
-
-    @Test
     public void testThatCreateCommentThrowsPostNotFoundExceptionWhenPostIsNotFound() {
-        Long postId = 1L;
-        Long userId = 1L;
-        CreateCommentRequest createCommentRequest = new CreateCommentRequest("test");
-
         Account account = TestDataUtil.createAccount();
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(account));
+        Long postId = 1L;
+        CreateCommentRequest createCommentRequest = new CreateCommentRequest("test");
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.empty());
 
         assertThrows(
                 PostNotFoundException.class,
-                () -> commentService.createComment(postId, userId, createCommentRequest)
+                () -> commentService.createComment(account, postId, createCommentRequest)
         );
 
         verify(commentRepository, never()).save(any());
@@ -83,11 +56,10 @@ public class CreateCommentServiceTests {
 
     @Test
     public void testThatCreateCommentReturnCommentResponseWhenAccountAndPostAreValid() {
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
-        Long userId = 1L;
         CreateCommentRequest createCommentRequest = new CreateCommentRequest("test");
 
-        Account account = TestDataUtil.createAccount();
         Post post = TestDataUtil.createPost(account);
         Comment comment = TestDataUtil.createComment(account, post);
 
@@ -98,9 +70,6 @@ public class CreateCommentServiceTests {
                 .authorId(comment.getAuthor().getId())
                 .authorUsername(comment.getAuthor().getUsername())
                 .build();
-
-        when(accountRepository.findById(userId))
-                .thenReturn(Optional.of(account));
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
@@ -114,7 +83,7 @@ public class CreateCommentServiceTests {
         when(commentMapper.mapFromCommentToCommentResponse(comment))
                 .thenReturn(commentResponse);
 
-        CommentResponse result = commentService.createComment(postId, userId, createCommentRequest);
+        CommentResponse result = commentService.createComment(account, postId, createCommentRequest);
 
         assertEquals(commentResponse, result);
 
