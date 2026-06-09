@@ -3,6 +3,7 @@ package com.janwypych.ForumApi.controllers.post;
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
 import com.janwypych.ForumApi.dtos.post.PostResponse;
+import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
@@ -10,16 +11,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,14 +42,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         @MockitoBean
         private PostService postService;
 
+        public Authentication createAuthentication() {
+            Account account = TestDataUtil.createAccount();
+
+            return new UsernamePasswordAuthenticationToken(
+                    account,
+                    null,
+                    List.of(new SimpleGrantedAuthority("ROLE_USER"))
+            );
+        }
     @Test
     public void testThatCreatePostReturnsHttp400WhenTitleIsBlank() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
         createPostRequest.setTitle("");
+
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -57,7 +74,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -72,7 +89,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -87,7 +104,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -102,7 +119,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -117,7 +134,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -125,51 +142,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         );
     }
 
-    @Test
-    public void testThatCreatePostReturnsHttp404WhenAccountIsNotFound() throws Exception {
-        CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
-        String createPostJson = objectMapper.writeValueAsString(createPostRequest);
-
-        when(postService.create(1L, createPostRequest))
-                .thenThrow(AccountNotFoundException.class);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(createPostJson)
-        ).andExpect(
-                status().isNotFound()
-        );
-    }
-
-    @Test
-    public void testThatCreatePostReturnsHttp201WhenRequestIsValid() throws Exception {
-        CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
-
-        PostResponse postResponse = PostResponse.builder()
-                .id(1L)
-                .title(createPostRequest.getTitle())
-                .content(createPostRequest.getContent())
-                .authorId(1L)
-                .createdAt(LocalDateTime.now())
-                .authorUsername("test")
-                .build();
-
-        String createPostJson = objectMapper.writeValueAsString(createPostRequest);
-
-        when(postService.create(1L, createPostRequest))
-                .thenReturn(postResponse);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(createPostJson)
-        ).andExpect(
-                status().isCreated()
-        );
-    }
     @Test
     public void testThatCreatePostReturnsPostResponseWhenRequestIsValid() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
@@ -184,12 +156,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 .authorUsername("test")
                 .build();
 
-        when(postService.create(anyLong(), any(CreatePostRequest.class)))
+        when(postService.create(any(Account.class), any(CreatePostRequest.class)))
                 .thenReturn(postResponse);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(

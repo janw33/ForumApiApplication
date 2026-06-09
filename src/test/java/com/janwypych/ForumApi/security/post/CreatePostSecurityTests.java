@@ -73,8 +73,8 @@ public class CreatePostSecurityTests {
                 .authorUsername("test")
                 .build();
 
-        when(postService.create(anyLong(), any(CreatePostRequest.class)))
-                .thenReturn(response);
+//        when(postService.create(anyLong(), any(CreatePostRequest.class)))
+//                .thenReturn(response);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
