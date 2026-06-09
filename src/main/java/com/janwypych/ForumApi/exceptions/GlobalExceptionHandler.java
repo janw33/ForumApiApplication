@@ -106,4 +106,20 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+    @ExceptionHandler(AccountHasNoPermissionException.class)
+    public ResponseEntity<ErrorResponse> handleAccountHasNoPermissionException(
+            AccountHasNoPermissionException accountHasNoPermissionException,
+            HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.FORBIDDEN.value())
+                .error("ACCOUNT_HAS_NO_PERMISSON")
+                .message(accountHasNoPermissionException.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 }

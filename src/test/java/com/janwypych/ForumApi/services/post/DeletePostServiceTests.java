@@ -3,10 +3,9 @@ package com.janwypych.ForumApi.services.post;
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
+import com.janwypych.ForumApi.entities.enums.Role;
+import com.janwypych.ForumApi.exceptions.AccountHasNoPermissionException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
-import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
-import com.janwypych.ForumApi.mappers.PostMapper;
-import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
@@ -18,13 +17,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class DeletePostServiceTests {
-    @Mock
-    private PostMapper postMapper;
+
 
     @Mock
     private PostRepository postRepository;
@@ -34,7 +31,7 @@ public class DeletePostServiceTests {
 
     @Test
     public void testThatDeletePostThrowsPostNotFoundExceptionWhenPostIsNotFound() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
 
         when(postRepository.findById(postId))
@@ -42,27 +39,26 @@ public class DeletePostServiceTests {
 
         assertThrows(
                 PostNotFoundException.class,
-                () -> postService.deletePost(userId, postId)
+                () -> postService.deletePost(account, postId)
         );
 
         verify(postRepository, never()).delete(any());
     }
 
     @Test
-    public void testThatDeletePostThrowsUserNotAuthorExceptionWhenUserIsNotAuthor() {
-        Long userId = 1L;
+    public void testThatDeletePostThrowsAccountHasNoPermissionExceptionWhenUserIsNotAuthorAndNotAdmin() {
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
 
-        Account author = TestDataUtil.createAccount();
-        author.setId(2L);
+        Account author = TestDataUtil.createAccount2();
         Post post = TestDataUtil.createPost(author);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
 
         assertThrows(
-                UserNotAuthorException.class,
-                () -> postService.deletePost(userId, postId)
+                AccountHasNoPermissionException.class,
+                () -> postService.deletePost(account, postId)
         );
 
         verify(postRepository, never()).delete(any());
@@ -70,16 +66,32 @@ public class DeletePostServiceTests {
 
     @Test
     public void testThatDeletePostDeletesPostWhenUserIsAuthorAndPostIsValid() {
-        Long userId = 1L;
+        Account account = TestDataUtil.createAccount();
         Long postId = 1L;
 
-        Account author = TestDataUtil.createAccount();
+        Post post = TestDataUtil.createPost(account);
+
+        when(postRepository.findById(postId))
+                .thenReturn(Optional.of(post));
+
+        postService.deletePost(account, postId);
+
+        verify(postRepository).delete(post);
+    }
+
+    @Test
+    public void testThatDeletePostDeletesPostWhenUserIsAdminAndPostIsValid() {
+        Account account = TestDataUtil.createAccount();
+        account.setRole(Role.ADMIN);
+        Long postId = 1L;
+
+        Account author = TestDataUtil.createAccount2();
         Post post = TestDataUtil.createPost(author);
 
         when(postRepository.findById(postId))
                 .thenReturn(Optional.of(post));
 
-        postService.deletePost(userId, postId);
+        postService.deletePost(account, postId);
 
         verify(postRepository).delete(post);
     }

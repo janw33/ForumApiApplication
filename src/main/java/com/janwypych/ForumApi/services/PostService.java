@@ -5,6 +5,8 @@ import com.janwypych.ForumApi.dtos.post.EditPostRequest;
 import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
+import com.janwypych.ForumApi.entities.enums.Role;
+import com.janwypych.ForumApi.exceptions.AccountHasNoPermissionException;
 import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
@@ -74,12 +76,16 @@ public class PostService {
         return postMapper.mapFromPostToPostResponse(postRepository.save(post));
     }
 
-    public void deletePost(Long userId, Long postId) {
+    public void deletePost(Account currentUser, Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
-        if(!post.getAuthor().getId().equals(userId))
-            throw new UserNotAuthorException("User not author");
+        boolean isAuthor = post.getAuthor().getId().equals(currentUser.getId());
+        boolean isAdmin = currentUser.getRole() == Role.ADMIN;
+
+        if (!isAuthor && !isAdmin) {
+            throw new AccountHasNoPermissionException("Account has no permission");
+        }
 
         postRepository.delete(post);
     }

@@ -7,6 +7,7 @@ import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
+import com.janwypych.ForumApi.entities.enums.Role;
 
 import java.time.LocalDateTime;
 
@@ -31,6 +32,7 @@ public final class TestDataUtil {
                 .username("test")
                 .email("test@test.com")
                 .password("hashedPassword")
+                 .role(Role.USER)
                 .build();
     }
     public static Account createAccount2() {
@@ -39,6 +41,7 @@ public final class TestDataUtil {
                 .username("test1")
                 .email("test1@test.com")
                 .password("hashedPassword1")
+                .role(Role.USER)
                 .build();
     }
     public static Account createAccount3() {
@@ -47,6 +50,7 @@ public final class TestDataUtil {
                 .username("test2")
                 .email("test2@test.com")
                 .password("hashedPassword2")
+                .role(Role.USER)
                 .build();
     }
 

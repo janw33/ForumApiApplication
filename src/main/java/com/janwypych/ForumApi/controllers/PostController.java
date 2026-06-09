@@ -58,15 +58,12 @@ public class PostController {
     }
 
     @DeleteMapping(path = "/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<Void> deletePost(
+            @AuthenticationPrincipal Account currentUser,
             @PathVariable("id") Long postId
     ) {
-        Authentication authentication =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        Long userId =  Long.parseLong(authentication.getName());
-
-        postService.deletePost(userId, postId);
+        postService.deletePost(currentUser, postId);
 
         return ResponseEntity.noContent().build();
     }
