@@ -24,6 +24,7 @@ public class PostController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PostResponse> createPost(
             @Valid @RequestBody CreatePostRequest createPostRequest
             ) {
