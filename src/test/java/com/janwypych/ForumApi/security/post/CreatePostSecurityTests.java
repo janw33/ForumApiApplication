@@ -3,20 +3,27 @@ package com.janwypych.ForumApi.security.post;
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
 import com.janwypych.ForumApi.dtos.post.PostResponse;
+import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import tools.jackson.databind.ObjectMapper;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +38,16 @@ public class CreatePostSecurityTests {
 
     @MockitoBean
     private PostService postService;
+
+    public Authentication createAuthentication() {
+        Account account = TestDataUtil.createAccount();
+
+        return new UsernamePasswordAuthenticationToken(
+                account,
+                null,
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+    }
 
     @Test
     public void testThatCreatePostReturnsHttp401WhenUserIsUnauthenticated() throws Exception {
@@ -73,12 +90,12 @@ public class CreatePostSecurityTests {
                 .authorUsername("test")
                 .build();
 
-//        when(postService.create(anyLong(), any(CreatePostRequest.class)))
-//                .thenReturn(response);
+       when(postService.create(any(Account.class), any(CreatePostRequest.class)))
+               .thenReturn(response);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(user("1"))
+                        .with(authentication(createAuthentication()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         ).andExpect(
