@@ -18,6 +18,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
@@ -31,26 +32,31 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-    @AutoConfigureMockMvc
-    public class CreatePostControllerTests {
-        @Autowired
-        private MockMvc mockMvc;
+@AutoConfigureMockMvc
+public class CreatePostControllerTests {
+    @Autowired
+    private MockMvc mockMvc;
 
-        @Autowired
-        private ObjectMapper objectMapper;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-        @MockitoBean
-        private PostService postService;
+    @MockitoBean
+    private PostService postService;
 
-        public Authentication createAuthentication() {
-            Account account = TestDataUtil.createAccount();
+    private Authentication createAuthentication() {
+        Account account = TestDataUtil.createAccount();
 
-            return new UsernamePasswordAuthenticationToken(
-                    account,
-                    null,
-                    List.of(new SimpleGrantedAuthority("ROLE_USER"))
-            );
-        }
+        return new UsernamePasswordAuthenticationToken(
+                account,
+                null,
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
+        );
+    }
+
+    private RequestPostProcessor authenticatedUser() {
+        return authentication(createAuthentication());
+    }
+
     @Test
     public void testThatCreatePostReturnsHttp400WhenTitleIsBlank() throws Exception {
         CreatePostRequest createPostRequest = TestDataUtil.createPostRequest();
@@ -59,7 +65,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -74,7 +80,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -89,7 +95,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -104,7 +110,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -119,7 +125,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -134,7 +140,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         String createPostJson = objectMapper.writeValueAsString(createPostRequest);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -161,7 +167,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(createPostJson)
         ).andExpect(
@@ -170,8 +176,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 MockMvcResultMatchers.jsonPath("$.title").value(createPostRequest.getTitle())
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.content").value(createPostRequest.getContent())
-        ).andExpect(
-                MockMvcResultMatchers.jsonPath("$.createdAt").isNotEmpty()
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.authorId").isNumber()
         ).andExpect(

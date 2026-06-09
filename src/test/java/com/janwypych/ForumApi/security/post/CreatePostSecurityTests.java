@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
@@ -39,7 +40,7 @@ public class CreatePostSecurityTests {
     @MockitoBean
     private PostService postService;
 
-    public Authentication createAuthentication() {
+    private Authentication createAuthentication() {
         Account account = TestDataUtil.createAccount();
 
         return new UsernamePasswordAuthenticationToken(
@@ -48,6 +49,11 @@ public class CreatePostSecurityTests {
                 List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
+
+    private RequestPostProcessor authenticatedUser() {
+        return authentication(createAuthentication());
+    }
+
 
     @Test
     public void testThatCreatePostReturnsHttp401WhenUserIsUnauthenticated() throws Exception {
@@ -95,7 +101,7 @@ public class CreatePostSecurityTests {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts")
-                        .with(authentication(createAuthentication()))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
         ).andExpect(
