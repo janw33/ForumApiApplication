@@ -41,18 +41,18 @@ public class EditPostSecurityTests {
     @MockitoBean
     private PostService postService;
 
-    private Authentication createAuthentication(String role) {
+    private Authentication createAuthentication() {
         Account account = TestDataUtil.createAccount();
 
         return new UsernamePasswordAuthenticationToken(
                 account,
                 null,
-                List.of(new SimpleGrantedAuthority(role))
+                List.of(new SimpleGrantedAuthority("ROLE_USER"))
         );
     }
 
-    private RequestPostProcessor authenticatedUser(String role) {
-        return authentication(createAuthentication(role));
+    private RequestPostProcessor authenticatedUser() {
+        return authentication(createAuthentication());
     }
 
     @Test
@@ -85,21 +85,6 @@ public class EditPostSecurityTests {
     }
 
     @Test
-    public void testThatEditPostReturnsHttp403WhenUserIsAdmin() throws Exception {
-        EditPostRequest editPostRequest = TestDataUtil.createEditPostRequest();
-        String editPostJson = objectMapper.writeValueAsString(editPostRequest);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.patch("/api/v1/posts/1")
-                        .with(authenticatedUser("ROLE_ADMIN"))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(editPostJson)
-        ).andExpect(
-                status().isForbidden()
-        );
-    }
-
-    @Test
     public void testThatEditPostReturnsHttp200WhenUserIsAuthenticated() throws Exception {
         EditPostRequest editPostRequest = TestDataUtil.createEditPostRequest();
         String editPostJson = objectMapper.writeValueAsString(editPostRequest);
@@ -118,7 +103,7 @@ public class EditPostSecurityTests {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/api/v1/posts/1")
-                        .with(authenticatedUser("ROLE_USER"))
+                        .with(authenticatedUser())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(editPostJson)
         ).andExpect(

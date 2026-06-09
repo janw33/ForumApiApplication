@@ -48,7 +48,7 @@ public class PostController {
 
 
     @PatchMapping(path = "/{id}")
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<PostResponse> editPost(
             @AuthenticationPrincipal Account currentUser,
             @Valid @RequestBody EditPostRequest editPostRequest,
