@@ -3,7 +3,6 @@ package com.janwypych.ForumApi.controllers.post;
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.exceptions.AccountHasNoPermissionException;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.services.PostService;

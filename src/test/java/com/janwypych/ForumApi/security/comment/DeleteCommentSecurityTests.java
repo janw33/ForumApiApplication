@@ -1,57 +1,85 @@
-//package com.janwypych.ForumApi.security.comment;
-//
-//import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
-//import com.janwypych.ForumApi.services.CommentService;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-//import org.springframework.test.context.bean.override.mockito.MockitoBean;
-//import org.springframework.test.web.servlet.MockMvc;
-//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-//
-//import static org.mockito.ArgumentMatchers.anyLong;
-//import static org.mockito.Mockito.doThrow;
-//import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-//import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-//
-//@SpringBootTest
-//@AutoConfigureMockMvc
-//public class DeleteCommentSecurityTests {
-//    @Autowired
-//    private MockMvc mockMvc;
-//
-//    @MockitoBean
-//    private CommentService commentService;
-//
-//    @Test
-//    public void testThatDeleteCommentReturnsHttp401WhenUserIsUnauthenticated() throws Exception {
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
-//        ).andExpect(
-//                status().isUnauthorized()
-//        );
-//    }
-//
-//    @Test
-//    public void testThatDeleteCommentReturnsHttp401WhenTokenIsInvalid() throws Exception {
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
-//                        .header("Authorization", "Bearer invalidtoken")
-//        ).andExpect(
-//                status().isUnauthorized()
-//        );
-//    }
-//
-//    @Test
-//    public void testThatDeleteCommentReturnsHttp204WhenUserIsAuthenticated() throws Exception {
-//
-//        mockMvc.perform(
-//                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
-//                        .with(user("1"))
-//        ).andExpect(
-//                status().isNoContent()
-//        );
-//    }
-//}
+package com.janwypych.ForumApi.security.comment;
+
+import com.janwypych.ForumApi.TestDataUtil;
+import com.janwypych.ForumApi.entities.Account;
+import com.janwypych.ForumApi.services.CommentService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.request.RequestPostProcessor;
+
+import java.util.List;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class DeleteCommentSecurityTests {
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private CommentService commentService;
+
+    private Authentication createAuthentication(String role) {
+        Account account = TestDataUtil.createAccount();
+
+        return new UsernamePasswordAuthenticationToken(
+                account,
+                null,
+                List.of(new SimpleGrantedAuthority(role))
+        );
+    }
+
+    private RequestPostProcessor authenticatedUser(String role) {
+        return authentication(createAuthentication(role));
+    }
+
+    @Test
+    public void testThatDeleteCommentReturnsHttp401WhenUserIsUnauthenticated() throws Exception {
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
+        ).andExpect(
+                status().isUnauthorized()
+        );
+    }
+
+    @Test
+    public void testThatDeleteCommentReturnsHttp401WhenTokenIsInvalid() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
+                        .header("Authorization", "Bearer invalidtoken")
+        ).andExpect(
+                status().isUnauthorized()
+        );
+    }
+
+    @Test
+    public void testThatDeleteCommentReturnsHttp204WhenUserIsAuthenticated() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
+                        .with(authenticatedUser("ROLE_USER"))
+        ).andExpect(
+                status().isNoContent()
+        );
+    }
+    @Test
+    public void testThatDeleteCommentReturnsHttp204WhenAdminIsAuthenticated() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.delete("/api/v1/posts/1/comments/1")
+                        .with(authenticatedUser("ROLE_ADMIN"))
+        ).andExpect(
+                status().isNoContent()
+        );
+    }
+
+}

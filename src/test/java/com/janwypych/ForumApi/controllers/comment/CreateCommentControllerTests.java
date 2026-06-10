@@ -5,7 +5,6 @@ import com.janwypych.ForumApi.dtos.comment.CommentResponse;
 import com.janwypych.ForumApi.dtos.comment.CreateCommentRequest;
 import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.services.CommentService;
 import com.janwypych.ForumApi.services.PostService;
@@ -115,24 +114,6 @@ public class CreateCommentControllerTests {
                         .content(createCommentJson)
         ).andExpect(
                 status().isBadRequest()
-        );
-    }
-
-    @Test
-    public void testThatCreateCommentReturnsHttp404WhenAccountDoesNotExist() throws Exception {
-        CreateCommentRequest createCommentRequest = new CreateCommentRequest("test");
-        String createCommentJson = objectMapper.writeValueAsString(createCommentRequest);
-
-        when(commentService.createComment(any(Account.class), anyLong(), eq(createCommentRequest)))
-                .thenThrow(AccountNotFoundException.class);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/api/v1/posts/1/comments")
-                        .with(authenticatedUser())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(createCommentJson)
-        ).andExpect(
-                status().isNotFound()
         );
     }
 

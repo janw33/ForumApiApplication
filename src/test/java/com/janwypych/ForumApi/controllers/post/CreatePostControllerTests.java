@@ -4,7 +4,6 @@ import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.post.CreatePostRequest;
 import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.services.PostService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

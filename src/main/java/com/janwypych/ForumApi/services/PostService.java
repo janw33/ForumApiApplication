@@ -7,7 +7,6 @@ import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.entities.enums.Role;
 import com.janwypych.ForumApi.exceptions.AccountHasNoPermissionException;
-import com.janwypych.ForumApi.exceptions.AccountNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.mappers.PostMapper;
