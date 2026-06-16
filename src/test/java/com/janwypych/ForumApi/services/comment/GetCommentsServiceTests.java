@@ -2,13 +2,11 @@ package com.janwypych.ForumApi.services.comment;
 
 import com.janwypych.ForumApi.TestDataUtil;
 import com.janwypych.ForumApi.dtos.comment.CommentResponse;
-import com.janwypych.ForumApi.dtos.post.PostResponse;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.CommentMapper;
-import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import com.janwypych.ForumApi.services.CommentService;
@@ -22,7 +20,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

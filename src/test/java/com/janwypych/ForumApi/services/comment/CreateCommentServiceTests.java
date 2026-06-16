@@ -8,7 +8,7 @@ import com.janwypych.ForumApi.entities.Comment;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.CommentMapper;
-    import com.janwypych.ForumApi.repositories.CommentRepository;
+import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import com.janwypych.ForumApi.services.CommentService;
 import org.junit.jupiter.api.Test;

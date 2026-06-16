@@ -12,7 +12,6 @@ import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.mappers.PostMapper;
 import com.janwypych.ForumApi.repositories.AccountRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

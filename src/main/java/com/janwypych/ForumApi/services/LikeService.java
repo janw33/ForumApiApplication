@@ -8,7 +8,6 @@ import com.janwypych.ForumApi.exceptions.LikeAlreadyExistsException;
 import com.janwypych.ForumApi.exceptions.LikeNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.LikeMapper;
-import com.janwypych.ForumApi.repositories.CommentRepository;
 import com.janwypych.ForumApi.repositories.LikeRepository;
 import com.janwypych.ForumApi.repositories.PostRepository;
 import org.springframework.stereotype.Service;

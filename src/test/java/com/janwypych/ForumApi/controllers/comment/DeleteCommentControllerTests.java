@@ -5,7 +5,6 @@ import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.exceptions.AccountHasNoPermissionException;
 import com.janwypych.ForumApi.exceptions.CommentNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
-import com.janwypych.ForumApi.exceptions.UserNotAuthorException;
 import com.janwypych.ForumApi.services.CommentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
