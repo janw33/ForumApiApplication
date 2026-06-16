@@ -26,6 +26,7 @@ public class Comment {
     private LocalDateTime createdAt;
 
     @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
     private Account author;
 
     @ManyToOne
