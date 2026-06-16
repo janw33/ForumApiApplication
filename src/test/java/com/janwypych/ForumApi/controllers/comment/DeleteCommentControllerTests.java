@@ -53,7 +53,7 @@ public class DeleteCommentControllerTests {
 
     @Test
     public void testThatDeleteCommentReturnsHttp404WhenPostIsNotFound() throws Exception {
-        doThrow(new PostNotFoundException("Post not fount"))
+        doThrow(new PostNotFoundException("Post not found"))
                 .when(commentService)
                 .deleteComment(any(Account.class), anyLong(), anyLong());
 

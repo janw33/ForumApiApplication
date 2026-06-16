@@ -53,8 +53,8 @@ public class LikePostControllerTests {
 
     @Test
     public void testThatLikePostReturnsHttp404WhenPostIsNotFound() throws Exception {
-        when(likeService.likePost(any(Account.class), anyLong())).
-                thenThrow(new PostNotFoundException("Post not found"));
+        when(likeService.likePost(any(Account.class), anyLong()))
+                .thenThrow(new PostNotFoundException("Post not found"));
 
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/api/v1/posts/1/likes")
