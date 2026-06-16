@@ -5,6 +5,7 @@ import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Like;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.exceptions.LikeAlreadyExistsException;
+import com.janwypych.ForumApi.exceptions.LikeNotFoundException;
 import com.janwypych.ForumApi.exceptions.PostNotFoundException;
 import com.janwypych.ForumApi.mappers.LikeMapper;
 import com.janwypych.ForumApi.repositories.CommentRepository;
@@ -47,5 +48,15 @@ public class LikeService {
         likeResponse.setUsername(savedLike.getAccount().getUsername());
 
         return likeResponse;
+    }
+
+    public void deleteLike(Account currentUser, Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
+
+        Like like = likeRepository.findByAccountAndPost(currentUser, post)
+                .orElseThrow(() -> new LikeNotFoundException("Like not found"));
+
+        likeRepository.delete(like);
     }
 }
