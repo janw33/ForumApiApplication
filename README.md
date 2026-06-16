@@ -5,7 +5,7 @@ Forum API is a REST API for an online discussion forum built with Spring Boot.
 The project allows users to register accounts, authenticate using JWT tokens, create and manage posts, add comments, and like posts. 
 The main goal of the project was to learn backend development with Spring Boot, Spring Security, JPA, testing, and layered application architecture.
 
-This was me second larger Spring Boot backend project created to practice REST API development, authentication, testing, and application architecture.
+This was my second larger Spring Boot backend project created to practice REST API development, authentication, testing, and application architecture.
 ## Features
 ### Authentication
 * User registration
@@ -82,11 +82,13 @@ docker compose up -d
 ```
 
 Database configuration:
+```text
 Host: localhost
 Port: 5433
 Database: forumdb
 Username: postgres
 Password: postgres
+```
 
 ### Run the application
 ```bash
