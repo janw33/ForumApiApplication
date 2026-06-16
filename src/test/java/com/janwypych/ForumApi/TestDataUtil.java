@@ -6,6 +6,7 @@ import com.janwypych.ForumApi.dtos.post.EditPostRequest;
 import com.janwypych.ForumApi.dtos.auth.LoginRequest;
 import com.janwypych.ForumApi.entities.Account;
 import com.janwypych.ForumApi.entities.Comment;
+import com.janwypych.ForumApi.entities.Like;
 import com.janwypych.ForumApi.entities.Post;
 import com.janwypych.ForumApi.entities.enums.Role;
 
@@ -85,6 +86,15 @@ public final class TestDataUtil {
                 .createdAt(LocalDateTime.now())
                 .content("test")
                 .author(author)
+                .post(post)
+                .build();
+    }
+
+    public static Like createLike(Account currentUser, Post post) {
+        return Like.builder()
+                .id(1L)
+                .createdAt(LocalDateTime.now())
+                .account(currentUser)
                 .post(post)
                 .build();
     }
