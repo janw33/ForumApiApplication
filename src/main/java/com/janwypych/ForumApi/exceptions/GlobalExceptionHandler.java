@@ -106,4 +106,20 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
+
+    @ExceptionHandler(LikeAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleLikeAlreadyExistsException(
+            LikeAlreadyExistsException likeAlreadyExistsException,
+            HttpServletRequest request) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .timestamp(LocalDateTime.now())
+                .status(HttpStatus.CONFLICT.value())
+                .error("LIKE_ALREADY_EXISTS")
+                .message(likeAlreadyExistsException.getMessage())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 }

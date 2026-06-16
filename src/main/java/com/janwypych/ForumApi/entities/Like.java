@@ -13,7 +13,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "like")
+@Table(name = "likes",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"account_id", "post_id"})
+        })
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,5 +32,6 @@ public class Like {
     @ManyToOne
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
+
 }
 
